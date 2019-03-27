@@ -37,21 +37,13 @@ void create_matrix(std::vector<T>& coeffs, SpMat& spm, const int mat_size) {
 void sparse_mv_mult(SpMat& spm, Eigen::VectorXd& b, Eigen::VectorXd& c,
                     const int mat_size) {
   /*
-  Sparse matrix * dense vector mutliplication. With OMP support.
+  Sparse matrix * dense vector mutliplication.
   */
 
   // TIMING
   auto start = std::chrono::high_resolution_clock::now();
   // TIMING
 
-  // #pragma omp parallel for
-  //   for (int k = 0; k < spm.size(); k++) {
-  // #pragma omp atomic update
-  //     // c[std::get<0>(spm[k])] += std::get<2>(spm[k]) *
-  //     b[std::get<1>(spm[k])];
-  //   }
-
-#pragma omp parallel
   c = spm * b;
 
   // TIMING

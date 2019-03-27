@@ -35,3 +35,26 @@ Output:
 ```
 Homemade sparse Matrix Mult. Time 1666 (milliseconds) for matrix of size 100000000 x 100000000
 ```
+
+### Brief Results Summary (WIP)
+Results from:
+```
+       OS:    macOS Mojave Version 10.14.3
+ Computer:    MacBook Pro (Retina, 15-inch, Mid 2015)
+Processor:    2.2 GHz Intel Core i7
+   Memory:    16 GB 1600 MHz DDR3
+```
+
+__As the tests become more refined these tests will be done on RMACC Summit/Blanca cluster__.
+
+```
+OMP_NUM_THREADS=1
+Homemade sparse Matrix Mult. Time 5531 (milliseconds) for matrix of size 100000000 x 100000000
+Eigen sparse Matrix Mult. Time 10270 (milliseconds) for matrix of size 100000000 x 100000000
+```
+
+```
+OMP_NUM_THREADS=4
+Homemade sparse Matrix Mult. Time 3410 (milliseconds) for matrix of size 100000000 x 100000000
+Eigen sparse Matrix Mult. Time 10561 (milliseconds) for matrix of size 100000000 x 100000000
+```
