@@ -1,0 +1,22 @@
+# conda env create -f environment.yml
+# conda remove --name myenv --all
+name: omp_mpi
+
+channels:
+  - conda-forge
+
+dependencies:
+  # Python Basics
+  - pip
+  - setuptools
+  # C/C++ Compilers and Related Packages
+  - mpich
+  - cmake
+  - eigen
+  - blas
+  - mkl
+  - scalapack
+  - lapack
+  - xeus-cling
+  - xtensor
+  - xtensor-blas
