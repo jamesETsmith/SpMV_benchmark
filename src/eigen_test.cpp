@@ -20,18 +20,55 @@ void create_matrix(std::vector<T>& coeffs, SpMat& spm, const int mat_size) {
   /*
   Populate the sparse matrix for multiplication.
   */
-  for (int i = 0; i < mat_size; i++) {
-    coeffs.push_back(T(i, i, diag * (i + 1)));
-    if (i + 1 < mat_size) {
-      coeffs.push_back(T(i, i + 1, off_diag * (i + 1)));
-      coeffs.push_back(T(i + 1, i, off_diag * (i + 1)));
-      if (i + 2 < mat_size) {
-        coeffs.push_back(T(i, i + 2, off_off_diag / (i + 1)));
-        coeffs.push_back(T(i + 2, i, off_off_diag / (i + 1)));
+  // TIMING
+  auto start = std::chrono::high_resolution_clock::now();
+  // TIMING
+
+  // Popluating
+  int reg_size = (int)mat_size / 3.0;
+
+#pragma omp declare reduction( \
+    merge:std::vector<T>             \
+    : omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()))
+#pragma omp parallel for reduction(merge : coeffs)
+  for (int i = 1; i < reg_size; i++) {
+    for (int j = 1; j < 5; j++) {
+      // Region 1
+      if (i * j < reg_size) {
+        coeffs.push_back({i, i * j, log(i + j + 1.0)});
+      }
+      // Region 2
+      if ((i + reg_size + j) % 2 == 0 && i + j < reg_size) {
+        coeffs.push_back(
+            {i + reg_size, i + reg_size + j, log(i + reg_size + j + 1)});
+        coeffs.push_back(
+            {i + reg_size + j, i + reg_size, log(i + reg_size + j + 1)});
+      }
+      // Region 3
+      if (i + 2 * j < reg_size) {
+        coeffs.push_back({i + reg_size, i + 2 * reg_size + 2 * j,
+                          log(i + 2 * reg_size + j + 1)});
+        coeffs.push_back({i + 2 * j + reg_size, i + 2 * reg_size,
+                          log(i + 2 * reg_size + j + 1)});
+        coeffs.push_back({i + 2 * reg_size, i + 2 * j + reg_size,
+                          log(i + 2 * reg_size + j + 1)});
+        coeffs.push_back({i + 2 * reg_size + 2 * j, i + reg_size,
+                          log(i + 2 * reg_size + j + 1)});
       }
     }
   }
+
   spm.setFromTriplets(coeffs.begin(), coeffs.end());
+
+  // TIMING
+  auto stop = std::chrono::high_resolution_clock::now();
+  auto duration =
+      std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+  printf(
+      "Eigen matrix population time %llu (milliseconds) for matrix of "
+      "size %d x %d\n",
+      duration.count(), mat_size, mat_size);
+  // TIMING
 }
 
 void sparse_mv_mult(SpMat& spm, Eigen::VectorXd& b, Eigen::VectorXd& c,
@@ -51,7 +88,7 @@ void sparse_mv_mult(SpMat& spm, Eigen::VectorXd& b, Eigen::VectorXd& c,
   auto duration =
       std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
   printf(
-      "Eigen sparse Matrix Mult. Time %llu (milliseconds) for matrix of size "
+      "Eigen sparse matrix mult. time %llu (milliseconds) for matrix of size "
       "%d x "
       "%d\n",
       duration.count(), mat_size, mat_size);

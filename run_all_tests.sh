@@ -1,5 +1,5 @@
 cd build
-N=100000000
+N=20000000
 
 echo "OMP_NUM_THREADS="$OMP_NUM_THREADS
 ./native $N

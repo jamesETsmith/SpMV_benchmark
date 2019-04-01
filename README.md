@@ -3,8 +3,11 @@ A benchmark of sparse matrix dense vector multiplication in C++ using homebuilt 
 
 ### Dependencies
 - CMake
+- MPI Compiler
+- OpenMP
 - Eigen
 - Cyclops Tensor Framework
+- TiledArray
 
 ### Building
 ```bash
@@ -36,6 +39,9 @@ Output:
 Homemade sparse Matrix Mult. Time 1666 (milliseconds) for matrix of size 100000000 x 100000000
 ```
 
+A 400x400 version of the sparse matrix:
+![](scripts/Sparse_pattern.png)
+
 ### Brief Results Summary (WIP)
 Results from:
 ```
@@ -49,12 +55,24 @@ __As the tests become more refined these tests will be done on RMACC Summit/Blan
 
 ```
 OMP_NUM_THREADS=1
-Homemade sparse Matrix Mult. Time 5531 (milliseconds) for matrix of size 100000000 x 100000000
-Eigen sparse Matrix Mult. Time 10270 (milliseconds) for matrix of size 100000000 x 100000000
+Homemade matrix population time 7488 (milliseconds) for matrix of size 20000000 x 20000000
+Homemade sparse matrix mult. time 1382 (milliseconds) for matrix of size 20000000 x 20000000
+Eigen matrix population time 11814 (milliseconds) for matrix of size 20000000 x 20000000
+Eigen sparse matrix mult. time 397 (milliseconds) for matrix of size 20000000 x 20000000
 ```
 
 ```
 OMP_NUM_THREADS=4
-Homemade sparse Matrix Mult. Time 3410 (milliseconds) for matrix of size 100000000 x 100000000
-Eigen sparse Matrix Mult. Time 10561 (milliseconds) for matrix of size 100000000 x 100000000
+Homemade matrix population time 6498 (milliseconds) for matrix of size 20000000 x 20000000
+Homemade sparse matrix mult. time 425 (milliseconds) for matrix of size 20000000 x 20000000
+Eigen matrix population time 11021 (milliseconds) for matrix of size 20000000 x 20000000
+Eigen sparse matrix mult. time 419 (milliseconds) for matrix of size 20000000 x 20000000
+```
+
+```
+OMP_NUM_THREADS=8
+Homemade matrix population time 6597 (milliseconds) for matrix of size 20000000 x 20000000
+Homemade sparse matrix mult. time 384 (milliseconds) for matrix of size 20000000 x 20000000
+Eigen matrix population time 11073 (milliseconds) for matrix of size 20000000 x 20000000
+Eigen sparse matrix mult. time 367 (milliseconds) for matrix of size 20000000 x 20000000
 ```
